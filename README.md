@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Xiteon website
 
-## Getting Started
+Marketing site for xiteon.com. Next.js 16 (App Router), TypeScript, plain CSS.
+Design follows the mockups in `../index.html` (Noto Serif Light + DM Sans, orange/lime palette).
 
-First, run the development server:
+## Run
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev     # http://localhost:3000
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Path | What |
+|---|---|
+| `src/lib/content.ts` | Copy for services, audiences, expert areas and tiers. Edit text here. |
+| `src/app/page.tsx` | Home |
+| `src/app/solutions/[audience]` | ai-labs, enterprises, ai-startups |
+| `src/app/services/[slug]` | rl-environments, expert-data, evals, deployment-readiness, indic-data |
+| `src/app/join`, `contact`, `trust`, `impact`, `about`, `privacy` | Other pages |
+| `src/app/api/lead`, `api/apply` | Form endpoints with validation and a honeypot |
+| `src/components` | Nav, Footer, Hero/Blobs, Reveal, Icon, Blocks, Forms |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Before launch
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Form storage:** submissions are appended to `data/*.jsonl` (git-ignored). That only works on a server with a disk. Swap `src/lib/submissions.ts` for a database, CRM or ATS before deploying to Vercel or similar.
+- **Placeholders:** orange dashed `.ph` chips mark content still needed: pay ranges, stats, case study, team, certifications, booking link. Search for `className="ph"`.
+- **Privacy notice:** `/privacy` is a draft and needs legal review (DPDP Act 2023).
+- **Not built yet:** Industries pages, blog/resources, analytics, Hindi and regional-language versions.
