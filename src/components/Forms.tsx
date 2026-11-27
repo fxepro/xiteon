@@ -6,19 +6,44 @@ import { expertAreas, services } from "@/lib/content";
 
 type Status = { kind: "idle" | "sending" | "ok" | "err"; text?: string };
 
-async function submit(url: string, payload: Record<string, unknown>): Promise<Status> {
+/**
+ * Sends a submission to Netlify Forms. The form names and fields are
+ * registered in public/__forms.html, which Netlify scans at deploy time.
+ * `next dev` can't receive these posts, so in development we log and succeed.
+ */
+async function submit(formName: "lead" | "apply", payload: Record<string, unknown>): Promise<Status> {
+  const body = new URLSearchParams({ "form-name": formName });
+  for (const [k, v] of Object.entries(payload)) {
+    body.append(k, Array.isArray(v) ? v.join(", ") : String(v ?? ""));
+  }
+
+  if (process.env.NODE_ENV === "development") {
+    console.info(`[dev] ${formName} submission (not sent):`, Object.fromEntries(body));
+    return { kind: "ok" };
+  }
+
   try {
-    const res = await fetch(url, {
+    const res = await fetch("/__forms.html", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body.toString(),
     });
-    const json = await res.json().catch(() => ({}));
-    if (!res.ok || !json.ok) return { kind: "err", text: json.error || "Something went wrong. Please try again." };
+    if (!res.ok) return { kind: "err", text: "Something went wrong. Please try again, or email us." };
     return { kind: "ok" };
   } catch {
     return { kind: "err", text: "Network error. Please try again." };
   }
+}
+
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+/** Returns an error message, or null when the required fields are filled. */
+function missing(f: Record<string, FormDataEntryValue>, required: string[]): string | null {
+  for (const key of required) {
+    if (!String(f[key] ?? "").trim()) return "Please fill in all required fields.";
+  }
+  if (!EMAIL.test(String(f.email ?? "").trim())) return "Please enter a valid email address.";
+  return null;
 }
 
 function useChips(initial: string[] = []) {
@@ -34,9 +59,11 @@ export function LeadForm() {
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const f = Object.fromEntries(new FormData(e.currentTarget));
+    const err = missing(f, ["name", "email", "company"]);
+    if (err) return setStatus({ kind: "err", text: err });
     if (needs.sel.length === 0) return setStatus({ kind: "err", text: "Pick at least one thing you need." });
     setStatus({ kind: "sending" });
-    setStatus(await submit("/api/lead", { ...f, needs: needs.sel }));
+    setStatus(await submit("lead", { ...f, needs: needs.sel }));
   }
 
   if (status.kind === "ok")
@@ -89,10 +116,12 @@ export function ApplyForm() {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const f = Object.fromEntries(fd);
+    const err = missing(f, ["name", "email", "city", "background"]);
+    if (err) return setStatus({ kind: "err", text: err });
     if (areas.sel.length === 0) return setStatus({ kind: "err", text: "Pick at least one area." });
     if (!fd.get("consent")) return setStatus({ kind: "err", text: "Please agree to the privacy notice to apply." });
     setStatus({ kind: "sending" });
-    setStatus(await submit("/api/apply", { ...f, areas: areas.sel, consent: true }));
+    setStatus(await submit("apply", { ...f, areas: areas.sel, consent: "yes" }));
   }
 
   if (status.kind === "ok")

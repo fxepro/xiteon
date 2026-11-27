@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="robots" content="noindex"><title>Forms</title></head>
+<body>
+<!--
+  Netlify Forms detection file. Netlify scans this static file at deploy time to
+  register the forms below; the React forms in src/components/Forms.tsx POST to
+  /__forms.html. Field names here must match the names the React forms send.
+  If you add a field to a form, add it here too, or Netlify will drop it.
+-->
+<form name="lead" data-netlify="true" netlify-honeypot="website" hidden>
+  <input type="hidden" name="form-name" value="lead">
+  <input name="website">
+  <input name="name">
+  <input name="email" type="email">
+  <input name="company">
+  <input name="segment">
+  <input name="needs">
+  <input name="volume">
+  <input name="timeline">
+  <textarea name="details"></textarea>
+</form>
+
+<form name="apply" data-netlify="true" netlify-honeypot="website" hidden>
+  <input type="hidden" name="form-name" value="apply">
+  <input name="website">
+  <input name="name">
+  <input name="email" type="email">
+  <input name="city">
+  <input name="hours">
+  <input name="areas">
+  <input name="languages">
+  <textarea name="background"></textarea>
+  <input name="consent">
+</form>
+</body>
+</html>

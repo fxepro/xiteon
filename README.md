@@ -20,12 +20,17 @@ npm run build
 | `src/app/solutions/[audience]` | ai-labs, enterprises, ai-startups |
 | `src/app/services/[slug]` | rl-environments, expert-data, evals, deployment-readiness, indic-data |
 | `src/app/join`, `contact`, `trust`, `impact`, `about`, `privacy` | Other pages |
-| `src/app/api/lead`, `api/apply` | Form endpoints with validation and a honeypot |
 | `src/components` | Nav, Footer, Hero/Blobs, Reveal, Icon, Blocks, Forms |
+| `public/__forms.html` | Netlify Forms definitions for the `lead` and `apply` forms |
+| `netlify.toml` | Netlify build settings, headers and redirects |
+
+## Deploying
+
+Hosted on Netlify, deploying automatically from `main`. See **[DEPLOY.md](DEPLOY.md)** for first-time setup, forms, the custom domain and the launch checklist.
 
 ## Before launch
 
-- **Form storage:** submissions are appended to `data/*.jsonl` (git-ignored). That only works on a server with a disk. Swap `src/lib/submissions.ts` for a database, CRM or ATS before deploying to Vercel or similar.
+- **Forms:** handled by Netlify Forms. In local dev, submissions are only logged to the console. If you add a form field, add it to `public/__forms.html` too.
 - **Placeholders:** orange dashed `.ph` chips mark content still needed: pay ranges, stats, case study, team, certifications, booking link. Search for `className="ph"`.
 - **Privacy notice:** `/privacy` is a draft and needs legal review (DPDP Act 2023).
 - **Not built yet:** Industries pages, blog/resources, analytics, Hindi and regional-language versions.

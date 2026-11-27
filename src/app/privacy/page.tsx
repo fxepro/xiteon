@@ -22,6 +22,10 @@ export default function PrivacyPage() {
         <h2>Why we collect it</h2>
         <p>To assess applications and match people to projects, and to respond to business enquiries. We don&apos;t sell personal data.</p>
 
+        <h2>Where it is stored</h2>
+        <p>Form submissions are received and stored by our website host, Netlify, Inc., which processes them on our behalf.
+          <span className="ph">[confirm data processing agreement and storage region]</span></p>
+
         <h2>How long we keep it</h2>
         <p><span className="ph">[retention period]</span></p>
 
